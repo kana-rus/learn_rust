@@ -1,0 +1,17 @@
+[package]
+name = "learn_rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+
+[[bin]]
+name = "closure"
+path = "Iterator&Closure/closure.rs"
+
+[[bin]]
+name = "iterator"
+path = "Iterator&Closure/iterator.rs"
