@@ -27,3 +27,6 @@ path = "SmartPointer/rc.rs"
 [[bin]]
 name = "ref_cell"
 path = "SmartPointer/ref_cell.rs"
+[[bin]]
+name = "circular_ref"
+path = "SmartPointer/circular_ref.rs"
