@@ -11,7 +11,19 @@ edition = "2021"
 [[bin]]
 name = "closure"
 path = "Iterator&Closure/closure.rs"
-
 [[bin]]
 name = "iterator"
 path = "Iterator&Closure/iterator.rs"
+
+[[bin]]
+name = "box"
+path = "SmartPointer/box.rs"
+[[bin]]
+name = "drop"
+path = "SmartPointer/drop.rs"
+[[bin]]
+name = "rc"
+path = "SmartPointer/rc.rs"
+[[bin]]
+name = "ref_cell"
+path = "SmartPointer/ref_cell.rs"
