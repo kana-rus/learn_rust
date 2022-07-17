@@ -30,3 +30,6 @@ path = "SmartPointer/ref_cell.rs"
 [[bin]]
 name = "circular_ref"
 path = "SmartPointer/circular_ref.rs"
+[[bin]]
+name = "weak_count_tree"
+path = "SmartPointer/weak_count_tree.rs"
