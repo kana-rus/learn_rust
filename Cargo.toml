@@ -60,3 +60,6 @@ path = "advanced_features/unsafe.rs"
 [[bin]]
 name = "advanced_trait"
 path = "advanced_features/advanced_trait.rs"
+[[bin]]
+name = "advanced_type"
+path = "advanced_features/advanced_type.rs"
