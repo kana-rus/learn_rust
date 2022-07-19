@@ -35,5 +35,11 @@ name = "weak_count_tree"
 path = "SmartPointer/weak_count_tree.rs"
 
 [[bin]]
-name = "thread"
-path = "Pararel/thread.rs"
+name = "simple_thread"
+path = "Pararel/simple_thread.rs"
+[[bin]]
+name = "channel"
+path = "Pararel/channel.rs"
+[[bin]]
+name = "mutex"
+path = "Pararel/mutex.rs"
