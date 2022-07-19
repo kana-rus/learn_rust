@@ -53,3 +53,10 @@ path = "ObjectOrientedPrograming/state_pattern.rs"
 [[bin]]
 name = "state_as_type"
 path = "ObjectOrientedPrograming/state_as_type.rs"
+
+[[bin]]
+name = "unsafe"
+path = "advanced_features/unsafe.rs"
+[[bin]]
+name = "advanced_trait"
+path = "advanced_features/advanced_trait.rs"
