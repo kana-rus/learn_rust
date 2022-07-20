@@ -8,6 +8,9 @@ use std::{
     io::{Read, Write},
     fs::File, thread, time::Duration,
 };
+mod thread_pool; use thread_pool::{
+    ThreadPool,
+};
 
 
 fn handle_connection(mut stream: TcpStream) {
@@ -70,10 +73,15 @@ fn handle_connection(mut stream: TcpStream) {
 
 
 fn main() {
+    const THREAD_POOL_SIZE: usize = 4;
+    let pool = ThreadPool::new(THREAD_POOL_SIZE);
     let listener = TcpListener::bind("127.0.0.1:7878").expect("failed to bind address");
 
     for stream in listener.incoming() {
         let stream = stream.expect("failed to unwrap stream");
-        handle_connection(stream);
+        // handle_connection(stream);
+        pool.execute(|| {
+            handle_connection(stream)
+        });
     }
 }
