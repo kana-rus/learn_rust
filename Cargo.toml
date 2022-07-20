@@ -61,5 +61,9 @@ path = "advanced_features/unsafe.rs"
 name = "advanced_trait"
 path = "advanced_features/advanced_trait.rs"
 [[bin]]
-name = "advanced_type"
-path = "advanced_features/advanced_type.rs"
+name = "macro"
+path = "advanced_features/macro.rs"
+
+[[bin]]
+name = "multi_thread_web_server"
+path = "multi_thread_web_server/main.rs"
