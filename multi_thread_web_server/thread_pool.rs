@@ -5,6 +5,10 @@ use std::{
 
 
 type Job = Box<dyn FnOnce() + Send + 'static>;
+enum Message {
+    NewJob(Job),
+    Terminate,  // これを用意しておかないとスレッドを終了できない (job を探して無限ループしてしまう)
+}
 
 /**
  * 通常の thread::JoinHandle<()> は、生成され次第渡されたクロージャーで
@@ -15,23 +19,34 @@ type Job = Box<dyn FnOnce() + Send + 'static>;
 #[allow(unused)]
 struct Worker {
     id: usize,
-    thread: thread::JoinHandle<()>  // returns ()
+    thread: Option<thread::JoinHandle<()>>  /* ThreadPool の Drop で thread の所有権を奪う
+    必要があるので、take() でそれを実現するために Option で包む */
 } impl Worker {
-    fn new(id: usize, reciever: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+    fn new(id: usize, reciever: Arc<Mutex<mpsc::Receiver<Message>>>) -> Worker {
         let thread = thread::spawn(move || {
             loop {
-                let job = reciever.lock()
+                let message = reciever.lock()
                                   .expect("failed to lock reciever")
                                   .recv()
-                                  .expect("failed to recieve job");
-                println!("Worker {} got a job; executing", &id);
-                job();
+                                  .expect("failed to recieve message");
+
+                match message {
+                    Message::NewJob(job) => {
+                        println!("Worker {} got a job; executing", &id);
+                        job();
+                    },
+                    Message::Terminate => {
+                        println!("Worker {} was told to terminate.", &id);
+                        break;
+                    },
+                }
+                
             }
         });
 
         Worker {
             id,
-            thread,
+            thread: Some(thread),
         }
     }
 }
@@ -53,13 +68,13 @@ channel を通して Job を Worker に渡す. 各 Worker が Job を処理す�
 #[allow(unused)]
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
-}impl ThreadPool {
+    sender: mpsc::Sender<Message>,
+} impl ThreadPool {
 
     pub fn new(size: usize) -> ThreadPool {
         assert!(size > 0);
 
-        let (sender, reciever) = mpsc::channel();
+        let (sender, reciever) = mpsc::channel::<Message>();
         let reciever = Arc::new(Mutex::new(reciever));
 
         let mut workers = Vec::with_capacity(size);
@@ -83,6 +98,38 @@ pub struct ThreadPool {
         */
     {
         let job = Box::new(f);
-        self.sender.send(job).expect("failed to send job");
+        self.sender.send(Message::NewJob(job)).expect("failed to send job");
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+
+        for _ in &self.workers {
+            self.sender.send(Message::Terminate)
+                       .expect("failed to send Terminate");
+        }
+
+        // Terminate を送りつけておいたので、以下の join() によって各 Worker は break する
+
+        println!("Shutting down all workers");
+        for worker in &mut self.workers {
+            println!("Shutting down worker {}", worker.id);
+            /*
+            ---- wroker.thread を Option で包まない場合
+
+            worker.thread.join()
+                         .expect("failed to join thread");
+
+            となるが、join() は move を伴う処理なので、
+            worker が可変参照である以上エラーになる
+            */
+            if let Some(thread) = worker.thread.take() {
+            // take() で thread を woiker --> Some の中の thread変数 に move
+                thread.join()
+                      // thread を move してきたので join() できる
+                      .expect("failed to join thread");
+            }
+        }
     }
 }
