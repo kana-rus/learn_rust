@@ -67,3 +67,7 @@ path = "advanced_features/macro.rs"
 [[bin]]
 name = "multi_thread_web_server"
 path = "multi_thread_web_server/main.rs"
+
+[[bin]]
+name = "binary_search_tree"
+path = "DataStructure/binary_search_tree.rs"

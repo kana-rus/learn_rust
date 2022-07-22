@@ -8,9 +8,7 @@ use std::{
     io::{Read, Write},
     fs::File, thread, time::Duration,
 };
-mod thread_pool; use thread_pool::{
-    ThreadPool,
-};
+mod thread_pool; use thread_pool::ThreadPool;
 
 
 fn handle_connection(mut stream: TcpStream) {
